@@ -1,0 +1,22 @@
+This will be a wonderful project.
+
+The goal is to have an app to enter all those feels you put off, 
+or to remember the ones you had that were great.
+
+Each "feel" will be a text field with name, description, 
+a "when to feel", 
+a "where to feel",
+and maybe a "has been felt" checkbox.
+
+Use factory function to create the "feel" objects.
+
+Start by making it run in console, get the logic working,
+then have a bit of code that deals with DOM manipulation
+
+For now all one javascript file, but later could modularize it (especially if I like
+my DOM manip code for future projects).
+
+Workflow from prototype to finished product:
+1. barebones index.html and script.js
+2. 
+
