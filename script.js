@@ -10,40 +10,48 @@ class feeling {
     }
 }
 
-class feelingList {
-    list = [];
+function FeelingList() {
+   const list = [];
 
-    addFeel(feeling){
-        feeling.id = this.list.length; // i love me an internal id
+    const addFeel = (feeling) => {
+        feeling.id = list.length; // i love me an internal id
 
-        this.list.push(feeling);
+        list.push(feeling);
     }
 
-    showFeelsIn(){
-        for(let feel in this.list){
-            console.log(this.list[feel]);
-        }
+    const getList = () => {
+        return list;
     }
 
-    showFeelsOf(){
-        for(let feel of this.list){
-            console.log(feel);
-        }
-    }
-
-    showFeelsForEach(){
-        this.list.forEach((feel) => {
+    const showFeels = () => {
+        list.forEach((feel) => {
             console.log(feel);
         })
     }
+
+    return {
+        addFeel,
+        getList,
+        showFeels
+    }
 }
 
+
+// hardcoded bits to be gotten rid of later ///
 const sad = new feeling("sad","kinda down","monday","work");
 const glad = new feeling("glad","kinda nice","tuesday","home");
 const mad = new feeling("mad","kinda angry","wednesday","work");
 
-const newFeelsList = new feelingList();
+const list = FeelingList();
 
-newFeelsList.addFeel(sad);
-newFeelsList.addFeel(glad);
-newFeelsList.addFeel(mad);
+list.addFeel(sad);
+list.addFeel(glad);
+list.addFeel(mad);
+    
+
+function DomHandler() {
+
+    const list = FeelingList();
+    const table = document.querySelector('.list');
+
+}
