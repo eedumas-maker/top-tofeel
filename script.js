@@ -57,8 +57,8 @@ function FeelingList() {
         return sortedList = _list.slice().sort((a,b) => b.date - a.date);
     }
 
+    
     // to add: 
-    // sort by time (recent first)
     // sort by location
     // 
 
