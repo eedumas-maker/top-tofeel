@@ -1,5 +1,4 @@
 class feeling {
-    id = 0;
 
     constructor(name, description, when, where, haveFelt = false){
         this.name = name;
@@ -8,7 +7,17 @@ class feeling {
         this.where = where;
         this.haveFelt = haveFelt;
     }
-    
+
+    // for flipping the condition of "have felt"
+    changeFelt () {
+        if(this.haveFelt !== true){
+            this.haveFelt = true;
+        }
+        else {
+            this.haveFelt = false;
+        }
+        return;
+    }
 }
 
 // contains main list as well as all sorting logic
@@ -17,8 +26,6 @@ function FeelingList() {
    const _list = [];
 
     const addFeel = (feeling) => {
-        feeling.id = _list.length; // i love me an internal id
-
         _list.push(feeling);
     }
 
@@ -40,11 +47,16 @@ function FeelingList() {
         return haveNotFeltList;
     }
 
+    const removeFeel = (index) => {
+        _list.splice(index, 1);
+    }
+
     return {
         addFeel,
         getAllFeels,
         showHaveFelt,
-        showHaveNotFelt
+        showHaveNotFelt,
+        removeFeel
     }
 }
 
