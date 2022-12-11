@@ -4,8 +4,8 @@ The goal is to have an app to enter all those feels you put off,
 or to remember the ones you had that were great.
 
 Each "feel" will be a text field with name, description, 
-a "when to feel", 
-a "where to feel",
+a "when to feel", (a date)
+a "where to feel", (a pulldown menu list)
 and maybe a "has been felt" checkbox.
 
 Use factory function to create the "feel" objects.
@@ -18,5 +18,21 @@ my DOM manip code for future projects).
 
 Workflow from prototype to finished product:
 1. barebones index.html and script.js
-2. 
+2. get it working in the console
+3. get it working in the DOM
+4. make the dom pretty
+5. at some point convert it to modules
+6. use modules with webpack
 
+
+
+Feelings can be snoozed, delayed.
+
+When they're snoozed, they grow in strength, and that's listed too.
+
+Sort options:
+- what's priority
+- what's delayed the longest
+- due date
+- where to feel
+- what's been felt (has been done)
