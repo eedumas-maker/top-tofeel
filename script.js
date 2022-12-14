@@ -88,3 +88,26 @@ const list = FeelingList();
 list.addFeel(sad);
 list.addFeel(glad);
 list.addFeel(mad);
+
+function DOMHandler() {
+
+    let feelList = list.getAllFeels();
+
+    const containerDiv = document.querySelector(".container");
+
+    const listElement = document.createElement('ul');
+
+    const item1 = document.createElement('li');
+
+    item1.textContent = "Hello"
+    
+    const item2 = document.createElement('li');
+
+    item2.textContent = `Name = ${feelList[1].name}, Description = ${feelList[1].description}`;
+
+    listElement.appendChild(item1);
+    listElement.appendChild(item2);
+    containerDiv.appendChild(listElement);
+}
+
+DOMHandler();
