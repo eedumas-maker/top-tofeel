@@ -1,21 +1,54 @@
 class feeling {
 	// will want to add other properties later: how long delayed, priority, etc.
 	constructor(name, description, date, where, haveFelt = false) {
-		this.name = name;
-		this.description = description;
-		this.date = date;
-		this.where = where;
-		this.haveFelt = haveFelt;
+		this._name = name;
+		this._description = description;
+		this._date = date;
+		this._where = where;
+		this._haveFelt = haveFelt;
 	}
 
 	// for flipping the condition of "have felt"
 	changeFelt() {
-		if (this.haveFelt !== true) {
-			this.haveFelt = true;
+		if (this._haveFelt !== true) {
+			this._haveFelt = true;
 		} else {
-			this.haveFelt = false;
+			this._haveFelt = false;
 		}
 		return;
+	}
+
+	// ok write some gets and sets
+	get name() {
+		return this._name;
+	}
+
+	set name(value) {
+		this._name = value;
+	}
+
+	get description() {
+		return this._description;
+	}
+
+	set description(value) {
+		this._description = value;
+	}
+
+	get date() {
+		return this._date;
+	}
+
+	set date(value) {
+		this._date = value;
+	}
+
+	get where() {
+		return this._where;
+	}
+
+	set where(value) {
+		this._where = value;
 	}
 }
 
@@ -103,21 +136,33 @@ function DOMHandler() {
 	let feelList = list.getAllFeels();
 
 	const containerDiv = document.querySelector('.container');
-
 	const listElement = document.createElement('ul');
 
-	const item1 = document.createElement('li');
-
-	listElement.appendChild(item1);
 	containerDiv.appendChild(listElement);
 
-	const addLine = () => {
-		const newLine = document.createElement('li');
+	// i need code that iterates through the array, and displays each feeling in the list and ends with a form line
 
-		listElement.appendChild(newLine);
+	// just display the list, handle the form element later on
+	const displayList = () => {
+		// refresh the list
+		listElement.innerHTML = '';
+
+		for (let i = 0; i < feelList.length; i++) {
+			let item = document.createElement('li');
+
+			item.textContent = `${feelList[i].name}, 
+								${feelList[i].description}, 
+								${feelList[i].date}, 
+								${feelList[i].where}`;
+
+			listElement.appendChild(item);
+		}
+		return list;
 	};
 
-	const formHandler = () => {
+	displayList();
+
+	const createForm = () => {
 		// create form
 		const form = document.createElement('form');
 
@@ -153,31 +198,35 @@ function DOMHandler() {
 		form.appendChild(inWhere);
 		form.appendChild(submitButton);
 
-		item1.appendChild(form);
-
 		form.addEventListener('submit', function (event) {
 			event.preventDefault();
 
-			addLine();
+			// create the feeling from the form content
+			let tempFeel = new feeling(
+				form.elements.inFeel.value,
+				form.elements.inDesc.value,
+				form.elements.inWhen.value,
+				form.elements.inWhere.value
+			);
 
-			let feel = form.elements.inFeel.value;
-			let desc = form.elements.inDesc.value;
-			let when = form.elements.inWhen.value;
-			let where = form.elements.inWhere.value;
+			// add the feeling to the main list
+			feelList.push(tempFeel);
 
-			// add line function
-			// displayLine function
+			// run the display code to refresh the display
+			displayList();
 
-			const lastItem = listElement.lastChild;
-
-			lastItem.innerHTML = `${feel}, ${desc}, ${when}, ${where}`;
+			// code to make sure a final line has the form element
+			let formLine = document.createElement('li');
+			formLine.appendChild(form);
+			listElement.appendChild(formLine);
 		});
+		return form;
 	};
-	formHandler();
 
-	return {
-		formHandler,
-	};
+	let formLine = document.createElement('li');
+	formLine.appendChild(createForm());
+
+	listElement.appendChild(formLine);
 }
 
 DOMHandler();
