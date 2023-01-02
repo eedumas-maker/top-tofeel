@@ -1,11 +1,19 @@
 class feeling {
 	// will want to add other properties later: how long delayed, priority, etc.
-	constructor(name, description, date, where, haveFelt = false) {
+	constructor(
+		name,
+		description,
+		date,
+		where,
+		haveFelt = false,
+		project = 'default'
+	) {
 		this._name = name;
 		this._description = description;
 		this._date = date;
 		this._where = where;
 		this._haveFelt = haveFelt;
+		this._project = project;
 	}
 
 	// for flipping the condition of "have felt"
@@ -50,6 +58,14 @@ class feeling {
 	set where(value) {
 		this._where = value;
 	}
+
+	get project() {
+		return this._project;
+	}
+
+	set project(value) {
+		this._project = value;
+	}
 }
 
 // contains main list as well as all sorting logic
@@ -90,7 +106,14 @@ function FeelingList() {
 
 	// to add:
 	// sort by location
+	// sort by project
 	//
+
+	const showProjects = () => {
+		// iterates through passed array of objects, and creates a new array of just the list of Projects
+		// only shows unique projects, by making a new array of the set of the filtered array
+		return Array.from(new Set(_list.map((array) => array.project)));
+	};
 
 	//edits main array and removes a feel
 	const removeFeel = (index) => {
@@ -102,13 +125,22 @@ function FeelingList() {
 		getAllFeels,
 		showHaveFelt,
 		showHaveNotFelt,
+		showProjects,
 		sortByRecent,
 		removeFeel,
 	};
 }
 
 // --- hardcoded section start --- (to be removed later)
-const sad = new feeling('sad', 'kinda down', new Date('2022-11-01'), 'work');
+
+const sad = new feeling(
+	'sad',
+	'kinda down',
+	new Date('2022-11-01'),
+	'work',
+	false,
+	'delay'
+);
 const glad = new feeling(
 	'glad',
 	'kinda nice',
@@ -136,13 +168,39 @@ function DOMHandler() {
 	let feelList = list.getAllFeels();
 
 	const containerDiv = document.querySelector('.container');
+	const projectElement = document.createElement('ul');
 	const listElement = document.createElement('ul');
 
+	containerDiv.appendChild(projectElement);
 	containerDiv.appendChild(listElement);
 
-	// i need code that iterates through the array, and displays each feeling in the list and ends with a form line
+	const projectDisplay = () => {
+		// !!!!!  using a global variable here, bad form, should just use a local instance of feeling list !!!!!
+		const projList = list.showProjects();
+
+		console.log(projList);
+
+		for (let i = 0; i < projList.length; i++) {
+			let button = document.createElement('button');
+
+			button.innerHTML = `${projList[i]}`;
+			button.name = `${projList[i]}`;
+			button.value = `${projList[i]}`;
+			button.id = `${projList[i]}`;
+
+			button.addEventListener('click', function () {
+				alert('button works!');
+			});
+			projectElement.appendChild(button);
+		}
+
+		// create buttons for each project
+		// create event listener for each button
+		// depending on which pressed, send that sorted array to displayList
+	};
 
 	// just display the list, handle the form element later on
+	// ideally this is just passed an array, because it'll display what the sorted version is
 	const displayList = () => {
 		// refresh the list
 		listElement.innerHTML = '';
@@ -159,8 +217,6 @@ function DOMHandler() {
 		}
 		return list;
 	};
-
-	displayList();
 
 	const createForm = () => {
 		// create form
@@ -222,6 +278,14 @@ function DOMHandler() {
 		});
 		return form;
 	};
+
+	// maybe have a function that just runs the full display functions in proper order
+	//
+
+	// initial calls after functions have been declared
+
+	projectDisplay();
+	displayList();
 
 	let formLine = document.createElement('li');
 	formLine.appendChild(createForm());
