@@ -1,17 +1,9 @@
 class feeling {
 	// will want to add other properties later: how long delayed, priority, etc.
-	constructor(
-		name,
-		description,
-		date,
-		where,
-		haveFelt = false,
-		project = 'default'
-	) {
+	constructor(name, about, date, haveFelt = false, project = 'default') {
 		this._name = name;
-		this._description = description;
+		this._about = about;
 		this._date = date;
-		this._where = where;
 		this._haveFelt = haveFelt;
 		this._project = project;
 	}
@@ -35,12 +27,12 @@ class feeling {
 		this._name = value;
 	}
 
-	get description() {
-		return this._description;
+	get about() {
+		return this._about;
 	}
 
-	set description(value) {
-		this._description = value;
+	set about(value) {
+		this._about = value;
 	}
 
 	get date() {
@@ -49,14 +41,6 @@ class feeling {
 
 	set date(value) {
 		this._date = value;
-	}
-
-	get where() {
-		return this._where;
-	}
-
-	set where(value) {
-		this._where = value;
 	}
 
 	get project() {
@@ -109,10 +93,15 @@ function FeelingList() {
 	// sort by project
 	//
 
-	const showProjects = () => {
+	const showUniqueProjects = () => {
 		// iterates through passed array of objects, and creates a new array of just the list of Projects
 		// only shows unique projects, by making a new array of the set of the filtered array
 		return Array.from(new Set(_list.map((array) => array.project)));
+	};
+
+	const showProjectSelection = (projectName) => {
+		let projectList = _list.filter((feel) => feel.project === projectName);
+		return projectList;
 	};
 
 	//edits main array and removes a feel
@@ -125,7 +114,8 @@ function FeelingList() {
 		getAllFeels,
 		showHaveFelt,
 		showHaveNotFelt,
-		showProjects,
+		showUniqueProjects,
+		showProjectSelection,
 		sortByRecent,
 		removeFeel,
 	};
@@ -135,25 +125,24 @@ function FeelingList() {
 
 const sad = new feeling(
 	'sad',
-	'kinda down',
+	'how hard coding is',
 	new Date('2022-11-01'),
-	'work',
 	false,
 	'delay'
 );
 const glad = new feeling(
 	'glad',
-	'kinda nice',
+	'every time my code runs',
 	new Date('2022-12-09'),
-	'home',
-	true
+	true,
+	'me'
 );
 const mad = new feeling(
 	'mad',
-	'kinda angry',
+	`when i can't figure out how it works`,
 	new Date('2022-12-06'),
-	'work',
-	true
+	true,
+	'me'
 );
 
 const list = FeelingList();
@@ -167,6 +156,10 @@ function DOMHandler() {
 	// later on just make this an instance of FeelingList()
 	let feelList = list.getAllFeels();
 
+	let tempList = [];
+
+	tempList = feelList;
+
 	const containerDiv = document.querySelector('.container');
 	const projectElement = document.createElement('ul');
 	const listElement = document.createElement('ul');
@@ -176,9 +169,7 @@ function DOMHandler() {
 
 	const projectDisplay = () => {
 		// !!!!!  using a global variable here, bad form, should just use a local instance of feeling list !!!!!
-		const projList = list.showProjects();
-
-		console.log(projList);
+		const projList = list.showUniqueProjects();
 
 		for (let i = 0; i < projList.length; i++) {
 			let button = document.createElement('button');
@@ -190,6 +181,9 @@ function DOMHandler() {
 
 			button.addEventListener('click', function () {
 				alert('button works!');
+
+				// set the temp list here to the current sorted array of the projects, and then call displayList
+				// or pass that array to displaylist? that'd be tidier
 			});
 			projectElement.appendChild(button);
 		}
@@ -202,16 +196,16 @@ function DOMHandler() {
 	// just display the list, handle the form element later on
 	// ideally this is just passed an array, because it'll display what the sorted version is
 	const displayList = () => {
-		// refresh the list
+		let array = tempList;
+
 		listElement.innerHTML = '';
 
-		for (let i = 0; i < feelList.length; i++) {
+		for (let i = 0; i < array.length; i++) {
 			let item = document.createElement('li');
 
-			item.textContent = `${feelList[i].name}, 
-								${feelList[i].description}, 
-								${feelList[i].date}, 
-								${feelList[i].where}`;
+			item.textContent = `${array[i].name}, 
+								${array[i].about}, 
+								${array[i].date}`;
 
 			listElement.appendChild(item);
 		}
@@ -227,31 +221,25 @@ function DOMHandler() {
 		const inFeel = document.createElement('input');
 		inFeel.type = 'text';
 		inFeel.name = 'inFeel';
-		inFeel.placeholder = 'Name your feeling';
+		inFeel.placeholder = `What's the Feeling?`;
 
 		const inDesc = document.createElement('input');
 		inDesc.type = 'text';
 		inDesc.name = 'inDesc';
-		inDesc.placeholder = 'Describe your feeling';
+		inDesc.placeholder = `What's it about?`;
 
 		const inWhen = document.createElement('input');
 		inWhen.type = 'text';
 		inWhen.name = 'inWhen';
 		inWhen.placeholder = 'When? YYYY-MM-DD';
 
-		const inWhere = document.createElement('input');
-		inWhere.type = 'text';
-		inWhere.name = 'inWhere';
-		inWhere.placeholder = 'Where did you feel it?';
-
 		const submitButton = document.createElement('button');
 		submitButton.type = 'submit';
-		submitButton.textContent = 'Submit';
+		submitButton.textContent = '+';
 
 		form.appendChild(inFeel);
 		form.appendChild(inDesc);
 		form.appendChild(inWhen);
-		form.appendChild(inWhere);
 		form.appendChild(submitButton);
 
 		form.addEventListener('submit', function (event) {
@@ -261,8 +249,7 @@ function DOMHandler() {
 			let tempFeel = new feeling(
 				form.elements.inFeel.value,
 				form.elements.inDesc.value,
-				form.elements.inWhen.value,
-				form.elements.inWhere.value
+				form.elements.inWhen.value
 			);
 
 			// add the feeling to the main list
