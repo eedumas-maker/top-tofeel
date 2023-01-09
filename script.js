@@ -52,8 +52,6 @@ class feeling {
 	}
 }
 
-// contains main list as well as all sorting logic
-
 function FeelingList() {
 	const _list = [];
 
@@ -121,42 +119,44 @@ function FeelingList() {
 	};
 }
 
-// --- hardcoded section start --- (to be removed later)
-
-const sad = new feeling(
-	'sad',
-	'how hard coding is',
-	new Date('2022-11-01'),
-	false,
-	'delay'
-);
-const glad = new feeling(
-	'glad',
-	'every time my code runs',
-	new Date('2022-12-09'),
-	true,
-	'me'
-);
-const mad = new feeling(
-	'mad',
-	`when i can't figure out how it works`,
-	new Date('2022-12-06'),
-	true,
-	'me'
-);
-
-const list = FeelingList();
-
-list.addFeel(sad);
-list.addFeel(glad);
-list.addFeel(mad);
-// --- hardcoded section end ---
+// ok let's instantiate a local feelList
 
 function DOMHandler() {
 	// later on just make this an instance of FeelingList()
-	let feelList = list.getAllFeels();
+	let feelList = FeelingList();
+
+	// --- hardcoded section start --- (to be removed later)
+
+	const sad = new feeling(
+		'sad',
+		'how hard coding is',
+		new Date('2022-11-01'),
+		false,
+		'delay'
+	);
+	const glad = new feeling(
+		'glad',
+		'every time my code runs',
+		new Date('2022-12-09'),
+		true,
+		'me'
+	);
+	const mad = new feeling(
+		'mad',
+		`when i can't figure out how it works`,
+		new Date('2022-12-06'),
+		true,
+		'me'
+	);
+
+	feelList.addFeel(sad);
+	feelList.addFeel(glad);
+	feelList.addFeel(mad);
+	// ----------------- hardcoded section end ------------------
 
 	let tempList = [];
+
+	let currentProject = 'all';
 
 	tempList = feelList;
 
@@ -168,8 +168,10 @@ function DOMHandler() {
 	containerDiv.appendChild(listElement);
 
 	const projectDisplay = () => {
-		// !!!!!  using a global variable here, bad form, should just use a local instance of feeling list !!!!!
-		const projList = list.showUniqueProjects();
+		const projList = feelList.showUniqueProjects();
+
+		// will this work to always have an "all" button?
+		projList.push('all');
 
 		for (let i = 0; i < projList.length; i++) {
 			let button = document.createElement('button');
@@ -180,7 +182,13 @@ function DOMHandler() {
 			button.id = `${projList[i]}`;
 
 			button.addEventListener('click', function () {
-				alert('button works!');
+				currentProject = `${projList[i]}`;
+
+				if (currentProject === 'all') {
+					displayList(feelList.getAllFeels());
+				} else {
+					displayList(feelList.showProjectSelection(currentProject));
+				}
 
 				// set the temp list here to the current sorted array of the projects, and then call displayList
 				// or pass that array to displaylist? that'd be tidier
@@ -194,10 +202,7 @@ function DOMHandler() {
 	};
 
 	// just display the list, handle the form element later on
-	// ideally this is just passed an array, because it'll display what the sorted version is
-	const displayList = () => {
-		let array = tempList;
-
+	const displayList = (array) => {
 		listElement.innerHTML = '';
 
 		for (let i = 0; i < array.length; i++) {
@@ -209,7 +214,9 @@ function DOMHandler() {
 
 			listElement.appendChild(item);
 		}
-		return list;
+
+		addForm(); // so whenever you call a display, it plops in a form line at the end!
+		return;
 	};
 
 	const createForm = () => {
@@ -253,17 +260,23 @@ function DOMHandler() {
 			);
 
 			// add the feeling to the main list
-			feelList.push(tempFeel);
+			feelList.addFeel(tempFeel);
 
 			// run the display code to refresh the display
-			displayList();
-
-			// code to make sure a final line has the form element
-			let formLine = document.createElement('li');
-			formLine.appendChild(form);
-			listElement.appendChild(formLine);
+			// if the current project list is all, show all feels, otherwise show project list of current project
+			if (currentProject === 'all') {
+				displayList(feelList.getAllFeels());
+			} else {
+				displayList(feelList.showProjectSelection(currentProject));
+			}
 		});
 		return form;
+	};
+
+	const addForm = () => {
+		let formLine = document.createElement('li');
+		formLine.appendChild(createForm());
+		listElement.appendChild(formLine);
 	};
 
 	// maybe have a function that just runs the full display functions in proper order
@@ -272,12 +285,9 @@ function DOMHandler() {
 	// initial calls after functions have been declared
 
 	projectDisplay();
-	displayList();
 
-	let formLine = document.createElement('li');
-	formLine.appendChild(createForm());
-
-	listElement.appendChild(formLine);
+	// initial display of all feels
+	displayList(feelList.getAllFeels());
 }
 
 DOMHandler();
