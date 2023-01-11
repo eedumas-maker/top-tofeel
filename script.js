@@ -9,7 +9,7 @@ class feeling {
 	}
 
 	// for flipping the condition of "have felt"
-	changeFelt() {
+	toggleFelt() {
 		if (this._haveFelt !== true) {
 			this._haveFelt = true;
 		} else {
@@ -41,6 +41,14 @@ class feeling {
 
 	set date(value) {
 		this._date = value;
+	}
+
+	get haveFelt() {
+		return this._haveFelt;
+	}
+
+	set haveFelt(value) {
+		this._haveFelt = value;
 	}
 
 	get project() {
@@ -130,21 +138,21 @@ function DOMHandler() {
 	const sad = new feeling(
 		'sad',
 		'how hard coding is',
-		new Date('2022-11-01'),
+		'date here',
 		false,
 		'delay'
 	);
 	const glad = new feeling(
 		'glad',
 		'every time my code runs',
-		new Date('2022-12-09'),
+		'date here',
 		true,
 		'me'
 	);
 	const mad = new feeling(
 		'mad',
 		`when i can't figure out how it works`,
-		new Date('2022-12-06'),
+		'date here',
 		true,
 		'me'
 	);
@@ -211,6 +219,36 @@ function DOMHandler() {
 			item.textContent = `${array[i].name}, 
 								${array[i].about}, 
 								${array[i].date}`;
+
+			let feltItButton = document.createElement('button');
+
+			console.log(array[i].haveFelt);
+
+			if (array[i].haveFelt === false) {
+				feltItButton.textContent = 'Felt it?';
+				item.removeAttribute('class', 'haveFelt');
+			} else {
+				feltItButton.textContent = 'Feeling it again?';
+				item.setAttribute('class', 'haveFelt');
+			}
+
+			feltItButton.id = i;
+			
+// some redundant code bullshit, but can't figure out just now
+
+			feltItButton.addEventListener('click', function () {
+				array[i].toggleFelt();
+
+				if (array[i].haveFelt === false) {
+					feltItButton.textContent = 'Felt it?';
+					item.removeAttribute('class', 'haveFelt');
+				} else {
+					feltItButton.textContent = 'Feeling it again?';
+					item.setAttribute('class', 'haveFelt');
+				}
+			});
+
+			item.appendChild(feltItButton);
 
 			listElement.appendChild(item);
 		}
