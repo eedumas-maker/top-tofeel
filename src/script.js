@@ -1,5 +1,9 @@
+import './style.css';
+
 class feeling {
 	// will want to add other properties later: how long delayed, priority, etc.
+	// Huh, why is the haveFelt default to False? I should be explicit about that somewhere
+
 	constructor(name, about, date, haveFelt = false, project = 'default') {
 		this._name = name;
 		this._about = about;
@@ -9,6 +13,8 @@ class feeling {
 	}
 
 	// for flipping the condition of "have felt"
+	// should this refresh it in the module? nah, it should only do one thing
+
 	toggleFelt() {
 		if (this._haveFelt !== true) {
 			this._haveFelt = true;
@@ -90,27 +96,26 @@ function FeelingList() {
 	};
 
 	// sort be recent, but don't alter original list
+
+	// Haven't Implemented Yet
 	const sortByRecent = () => {
 		return (sortedList = _list.slice().sort((a, b) => b.date - a.date));
 	};
 
-	// to add:
-	// sort by location
-	// sort by project
-	//
-
+	// this is to display at the top all the different project categories
 	const showUniqueProjects = () => {
 		// iterates through passed array of objects, and creates a new array of just the list of Projects
 		// only shows unique projects, by making a new array of the set of the filtered array
 		return Array.from(new Set(_list.map((array) => array.project)));
 	};
 
+	// i don't know what this does, need to remember how those work
 	const showProjectSelection = (projectName) => {
 		let projectList = _list.filter((feel) => feel.project === projectName);
 		return projectList;
 	};
 
-	//edits main array and removes a feel
+	//edits main array and removes a feel based on its location in the array
 	const removeFeel = (index) => {
 		_list.splice(index, 1);
 	};
@@ -169,7 +174,9 @@ function DOMHandler() {
 	tempList = feelList;
 
 	const containerDiv = document.querySelector('.container');
+
 	const projectElement = document.createElement('ul');
+
 	const listElement = document.createElement('ul');
 
 	containerDiv.appendChild(projectElement);
@@ -203,10 +210,6 @@ function DOMHandler() {
 			});
 			projectElement.appendChild(button);
 		}
-
-		// create buttons for each project
-		// create event listener for each button
-		// depending on which pressed, send that sorted array to displayList
 	};
 
 	// just display the list, handle the form element later on
@@ -222,7 +225,7 @@ function DOMHandler() {
 
 			let feltItButton = document.createElement('button');
 
-			console.log(array[i].haveFelt);
+			console.log(array[i].name, array[i].haveFelt);
 
 			if (array[i].haveFelt === false) {
 				feltItButton.textContent = 'Felt it?';
@@ -233,8 +236,8 @@ function DOMHandler() {
 			}
 
 			feltItButton.id = i;
-			
-// some redundant code bullshit, but can't figure out just now
+
+			// some redundant code bullshit, but can't figure out just now
 
 			feltItButton.addEventListener('click', function () {
 				array[i].toggleFelt();
@@ -278,6 +281,23 @@ function DOMHandler() {
 		inWhen.name = 'inWhen';
 		inWhen.placeholder = 'When? YYYY-MM-DD';
 
+		const radioFeelingIt = document.createElement('input');
+		radioFeelingIt.type = 'radio';
+		radioFeelingIt.name = 'felt';
+		radioFeelingIt.value = false;
+		radioFeelingIt.checked = true; // well that doesn't work, fix it next
+
+		const radioFeelingItLabel = document.createElement('label');
+		radioFeelingItLabel.textContent = 'Feeling It Now?';
+
+		const radioFeltIt = document.createElement('input');
+		radioFeltIt.type = 'radio';
+		radioFeltIt.name = 'felt';
+		radioFeltIt.value = true;
+
+		const radioFeltItLabel = document.createElement('label');
+		radioFeltItLabel.textContent = 'Felt It Through?';
+
 		const submitButton = document.createElement('button');
 		submitButton.type = 'submit';
 		submitButton.textContent = '+';
@@ -285,6 +305,10 @@ function DOMHandler() {
 		form.appendChild(inFeel);
 		form.appendChild(inDesc);
 		form.appendChild(inWhen);
+		form.appendChild(radioFeelingIt);
+		form.appendChild(radioFeelingItLabel);
+		form.appendChild(radioFeltIt);
+		form.appendChild(radioFeltItLabel);
 		form.appendChild(submitButton);
 
 		form.addEventListener('submit', function (event) {
@@ -296,6 +320,15 @@ function DOMHandler() {
 				form.elements.inDesc.value,
 				form.elements.inWhen.value
 			);
+
+			const radioButtons = document.querySelectorAll('input[name="felt"]');
+
+			for (const radioButton of radioButtons) {
+				if (radioButton.checked) {
+					tempFeel.haveFelt = radioButton.value;
+					console.log(tempFeel.name, tempFeel.haveFelt);
+				}
+			}
 
 			// add the feeling to the main list
 			feelList.addFeel(tempFeel);

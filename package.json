@@ -1,0 +1,31 @@
+{
+	"name": "top-tofeel",
+	"version": "1.0.0",
+	"description": "A list of feelings to feel",
+	"main": "script.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "webpack",
+		"watch": "webpack --watch"
+	},
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/eedumas-maker/top-tofeel.git"
+	},
+	"author": "Evan Dumas",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/eedumas-maker/top-tofeel/issues"
+	},
+	"homepage": "https://github.com/eedumas-maker/top-tofeel#readme",
+	"devDependencies": {
+		"css-loader": "^6.7.3",
+		"style-loader": "^3.3.1",
+		"webpack": "^5.76.0",
+		"webpack-cli": "^5.0.1"
+	},
+	"dependencies": {
+		"date-fns": "^2.29.3"
+	}
+}
